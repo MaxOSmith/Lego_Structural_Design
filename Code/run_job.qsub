@@ -1,0 +1,48 @@
+#!/bin/bash --login
+
+### Set PBS parameters ###
+
+# Time job will take to execute (HH:MM:SS format)
+#PBS -l walltime=24:00:00
+
+# Memory needed by the job (not strictly necessary)
+#PBS -l mem=16gb
+
+# Number of nodes required and the number of processors per node
+#PBS -l nodes=3:ppn=8
+
+# Make output and error files the same file
+#PBS -j oe
+
+# Send an email when a job is aborted, begins or ends
+#PBS -m abe
+
+# Specify the email address
+#PBS -M smit2053@msu.edu
+
+# Give the job a name
+#PBS -N Lego_Structure
+ 
+ 
+cd ${PBS_O_WORKDIR}       # Change to the Original Working Directory
+                          # that is, the directory where "qsub" was called
+
+
+### Load any required modules ###
+
+module load SciPy
+module load mpi4py
+module load HDF5
+module load h5py 
+module load matplotlib
+module load NumPy/1.8.0
+
+ 
+###  List job commands ###
+# (note: you should make sure that "nodes * ppn" match the value for "-np")
+# To make sure we catch all standard output and error output we pipe these
+# into "estd.out"
+
+mpirun -np 24 python driver.py > estd.out
+
+qstat -f ${PBS_JOBID}
